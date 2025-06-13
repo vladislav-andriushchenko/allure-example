@@ -10,9 +10,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * @author eroshenkoam (Artem Eroshenko).
- */
+
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

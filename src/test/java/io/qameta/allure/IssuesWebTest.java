@@ -4,12 +4,12 @@ import org.junit.jupiter.api.*;
 
 
 @Layer("web")
-@Owner("vladi_allure_example")
+@Owner("vladislav-andriushchenko")
 @Feature("Issues")
 public class IssuesWebTest {
 
-    private static final String OWNER = "vladi_allure_example";
-    private static final String REPO = "allure_example";
+    private static final String OWNER = "vladislav-andriushchenko";
+    private static final String REPO = "allure-example";
 
     private static final String ISSUE_TITLE = "Some issue title here";
 
