@@ -1,22 +1,15 @@
 package io.qameta.allure;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Tags;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
-/**
- * @author eroshenkoam (Artem Eroshenko).
- */
+
 @Layer("web")
-@Owner("eroshenkoam")
+@Owner("vladi_allure_example")
 @Feature("Issues")
 public class IssuesWebTest {
 
-    private static final String OWNER = "allure-framework";
-    private static final String REPO = "allure2";
+    private static final String OWNER = "vladi_allure_example";
+    private static final String REPO = "allure_example";
 
     private static final String ISSUE_TITLE = "Some issue title here";
 

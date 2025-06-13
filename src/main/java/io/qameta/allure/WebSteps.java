@@ -1,20 +1,12 @@
 package io.qameta.allure;
 
-import io.qameta.allure.Attachment;
-import io.qameta.allure.Step;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
-/**
- * @author eroshenkoam (Artem Eroshenko).
- */
 public class WebSteps {
 
     @Step("Starting web driver")
@@ -82,8 +74,11 @@ public class WebSteps {
     @Attachment(value = "Page", type = "text/html", fileExtension = "html")
     public byte[] attachPageSource() {
         try {
-            final InputStream stream = ClassLoader.getSystemResourceAsStream("index.html");
-            return IOUtils.toString(stream, Charset.forName("UTF-8")).getBytes();
+            InputStream stream = getClass().getClassLoader().getResourceAsStream("index.html");
+            if (stream != null) {
+                return IOUtils.toString(stream, StandardCharsets.UTF_8).getBytes();
+            }
+            return new byte[0];
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -91,7 +86,7 @@ public class WebSteps {
 
     private void maybeThrowSeleniumTimeoutException() {
         if (isTimeToThrowException()) {
-            fail(webDriverIsNotReachable("Allure"));
+            throw new AssertionError(webDriverIsNotReachable("Allure"));
         }
     }
 
@@ -99,16 +94,16 @@ public class WebSteps {
         try {
             Thread.sleep(1000);
             if (isTimeToThrowException()) {
-                fail(elementNotFoundMessage("[//div[@class='something']]"));
+                throw new AssertionError(elementNotFoundMessage("[//div[@class='something']]"));
             }
         } catch (InterruptedException e) {
-            //do nothing, it's dummy test
+            Thread.currentThread().interrupt();
         }
     }
 
     private void maybeThrowAssertionException(String text) {
         if (isTimeToThrowException()) {
-            fail(textEqual(text, "another text"));
+            throw new AssertionError(textEqual(text, "another text"));
         }
     }
 
@@ -120,26 +115,26 @@ public class WebSteps {
     }
 
     private String webDriverIsNotReachable(final String text) {
-        return String.format("WebDriverException: chrome not reachable\n" +
-                "Element not found {By.xpath: //a[@href='/eroshenkoam/allure-example']}\n" +
-                "Expected: text '%s'\n" +
-                "Page source: file:/Users/eroshenkoam/Developer/eroshenkoam/webdriver-coverage-example/build/reports/tests/1603973861960.0.html\n" +
+        return String.format("WebDriverException: chrome not reachable%n" +
+                "Element not found {By.xpath: //a[@href='/eroshenkoam/allure-example']}%n" +
+                "Expected: text '%s'%n" +
+                "Page source: file:/build/reports/tests/index.html%n" +
                 "Timeout: 4 s.", text);
     }
 
     private String textEqual(final String expected, final String actual) {
-        return String.format("Element should text '%s' {By.xpath: //a[@href='/eroshenkoam/allure-example']}\n" +
-                "Element: '<a class=\"v-align-middle\">%s</a>'\n" +
-                "Screenshot: file:/Users/eroshenkoam/Developer/eroshenkoam/webdriver-coverage-example/build/reports/tests/1603973703632.0.png\n" +
-                "Page source: file:/Users/eroshenkoam/Developer/eroshenkoam/webdriver-coverage-example/build/reports/tests/1603973703632.0.html\n" +
-                "Timeout: 4 s.\n", expected, actual);
+        return String.format("Element should text '%s' {By.xpath: //a[@href='/eroshenkoam/allure-example']}%n" +
+                "Element: '<a class=\"v-align-middle\">%s</a>'%n" +
+                "Screenshot: file:/build/reports/tests/screenshot.png%n" +
+                "Page source: file:/build/reports/tests/index.html%n" +
+                "Timeout: 4 s.%n", expected, actual);
     }
 
     private String elementNotFoundMessage(String selector) {
-        return String.format("Element not found {By.xpath: %s}\n" +
-                "Expected: visible or transparent: visible or have css value opacity=0\n" +
-                "Screenshot: file:/Users/eroshenkoam/Developer/eroshenkoam/webdriver-coverage-example/build/reports/tests/1603973516437.0.png\n" +
-                "Page source: file:/Users/eroshenkoam/Developer/eroshenkoam/webdriver-coverage-example/build/reports/tests/1603973516437.0.html\n" +
-                "Timeout: 4 s.\n", selector);
+        return String.format("Element not found {By.xpath: %s}%n" +
+                "Expected: visible or transparent: visible or have css value opacity=0%n" +
+                "Screenshot: file:/build/reports/tests/screenshot.png%n" +
+                "Page source: file:/build/reports/tests/index.html%n" +
+                "Timeout: 4 s.%n", selector);
     }
 }
